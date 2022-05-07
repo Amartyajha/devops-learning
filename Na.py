@@ -38,7 +38,10 @@ import subprocess
 import os
 import git
 
+
+# go to the path
 os.chdir('/Users/amartyajha/Learning/Python/devops-learning')
+# get the last two revision for the same file
 last2commits=subprocess.run('git rev-list HEAD -n 2 topics.csv',capture_output=True, shell=True, text=True, check=True)
 data=last2commits.stdout.split('\n')
 diff_commits=subprocess.run(['git', 'diff', data[0], data[1]],capture_output=True,text=True)
@@ -48,6 +51,7 @@ for i in diff:
     if((i.startswith('+') and not i.startswith('+++')) or (i.startswith('-') and not i.startswith('---'))):
         modifiedArray.append(i)
 print(modifiedArray)
+
 #applyModifications(modifiedArray)
 
 
