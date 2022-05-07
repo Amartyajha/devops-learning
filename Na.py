@@ -32,24 +32,56 @@ system.
 # GET THE GIT diff
 # 
 
-from traceback import print_tb
+from calendar import c
+import pwd
+import subprocess
+import os
 import git
-import re
 
-def getModifications():
+os.chdir('/Users/amartyajha/Learning/Python/devops-learning')
+last2commits=subprocess.run('git rev-list HEAD -n 2 topics.csv',capture_output=True, shell=True, text=True, check=True)
+data=last2commits.stdout.split('\n')
+diff_commits=subprocess.run(['git', 'diff', data[0], data[1]],capture_output=True,text=True)
+diff=(diff_commits.stdout.split('\n'))
+modifiedArray=[]
+for i in diff:
+    if((i.startswith('+') and not i.startswith('+++')) or (i.startswith('-') and not i.startswith('---'))):
+        modifiedArray.append(i)
+print(modifiedArray)
+#applyModifications(modifiedArray)
+
+
+"""p1=subprocess.run('''
+for i in $data 
+do 
+    echo $i
+    git diff $i $i | grep "^+" | grep -v "^+++"
+done
+''',capture_output=True, shell=True, text=True, check=True)
+
+print(p1.stdout)"""
+
+
+
+
+import os
+import git
+
+
+"""def getModifications():
     repo = git.Repo('.')
     listofChanges=(repo.git.diff('HEAD~1').split('\n'))
     modifiedArray=[]
     for i in listofChanges:
         if((i.startswith('+') and not i.startswith('+++')) or (i.startswith('-') and not i.startswith('---'))):
             modifiedArray.append(i)
-    print(modifiedArray)
+    #print(modifiedArray)
     applyModifications(modifiedArray)
 
 def applyModifications(modifiedArray):
     topicName=[]
     for i in modifiedArray:
-        #print(i)
+        print(i)
         if(i.startswith('-')):
             topicName.append(i[1:].split(',')[0])
         else:
@@ -61,4 +93,5 @@ def applyModifications(modifiedArray):
     #print(topicName)
 
 
-getModifications()
+getModifications()"""
+
