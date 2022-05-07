@@ -36,26 +36,73 @@ from calendar import c
 import pwd
 import subprocess
 import os
+from webbrowser import get
 import git
 
+# start kafka bby running this
+# /opt/homebrew/opt/kafka/bin/kafka-server-start /opt/homebrew/etc/kafka/server.properties
 
 # go to the path
-os.chdir('/Users/amartyajha/Learning/Python/devops-learning')
-# get the last two revision for the same file
-last2commits=subprocess.run('git rev-list HEAD -n 2 topics.csv',capture_output=True, shell=True, text=True, check=True)
-data=last2commits.stdout.split('\n')
-diff_commits=subprocess.run(['git', 'diff', data[0], data[1]],capture_output=True,text=True)
-diff=(diff_commits.stdout.split('\n'))
-modifiedArray=[]
-for i in diff:
-    if((i.startswith('+') and not i.startswith('+++')) or (i.startswith('-') and not i.startswith('---'))):
-        modifiedArray.append(i)
-print(modifiedArray)
+def getModifications():
+    os.chdir('/Users/amartyajha/Learning/Python/devops-learning')
+    # get the last two revision for the same file
+    last2commits=subprocess.run('git rev-list HEAD -n 2 topics.csv',capture_output=True, shell=True, text=True, check=True)
+    data=last2commits.stdout.split('\n')
+    diff_commits=subprocess.run(['git', 'diff', data[1], data[0]],capture_output=True,text=True)
+    diff=(diff_commits.stdout.split('\n'))
+    modifiedArray=[]
+    for i in diff:
+        if((i.startswith('+') and not i.startswith('+++')) or (i.startswith('-') and not i.startswith('---'))):
+            modifiedArray.append(i)
+    print(modifiedArray)
+    applyModifications(modifiedArray)
 
-#applyModifications(modifiedArray)
+def applyModifications(modifiedArray):
+    topicName={}
+    for i in modifiedArray:
+        if(i[1:].split(',')[0] in topicName):
+            topicName[i[1:].split(',')[0]]+=1
+        else:
+            topicName[i[1:].split(',')[0]]=1
+    print(topicName)
+    
+    for i in topicName:
+        if(topicName[i]>1):
+            getTopicValues(i,modifiedArray)
+            #subprocess.run(['kafka-topics','--bootstrap-server','localhost:9092','--alter','--topic',i,'--partitions',topicValues[1], '--replication-factor', topicValues[2]],capture_output=True, text=True, check=True)
+        else:
+            for j in modifiedArray:
+                if(j.startswith("+"+i)):
+                    topicValues=j.split(',')
+                    print(topicValues)
+                    #subprocess.run(['kafka-topics','--bootstrap-server','localhost:9092','--create','--topic',i,'--partitions',topicValues[1], '--replication-factor', topicValues[2]],capture_output=True, text=True, check=True)
+                elif(j.startswith("-"+i)):
+                    topicValues=j.split(',')
+                    print(topicValues)
+                    #subprocess.run(['kafka-topics','--bootstrap-server','localhost:9092','--delete','--topic',i,'--partitions',topicValues[1], '--replication-factor', topicValues[2]],capture_output=True, text=True, check=True)
+
+def getTopicValues(i,modifiedArray):
+    for j in modifiedArray:
+        if(j.startswith("+"+i)):
+            topicValues=j.split(',')
+            print(topicValues)
 
 
-"""p1=subprocess.run('''
+getModifications()     
+
+
+"""
+
+{
+    'dev-campaigns-association-updated_two': [4,3,10800000,5242880, 5,3,10800000,5242880],
+    'credit_underwriting.public.test': [10,3,10800000,52428880]
+}
+"""
+
+
+
+"""
+p1=subprocess.run('''
 for i in $data 
 do 
     echo $i
@@ -63,7 +110,8 @@ do
 done
 ''',capture_output=True, shell=True, text=True, check=True)
 
-print(p1.stdout)"""
+print(p1.stdout)
+"""
 
 
 
@@ -95,7 +143,7 @@ def applyModifications(modifiedArray):
         # check if a new topic is created or is it modified
         #topicName.append(i.split('-').split('+')[1].split(',')[0])
     #print(topicName)
-
+78bab6fd08a6bdc1859e66f84efa1dec72879226
 
 getModifications()"""
 
