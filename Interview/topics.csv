@@ -1,6 +1,7 @@
 TOPICS,PARTITIONS,REPLICATION_FACTOR,RETENTION_TIME_MS,MESSAGE_BYTES
 dev-eod-enach-for-dpd-accounts,2,3,10800000,5242880
 qa-eod-enach-for-dpd-accounts,2,3,10800000,5242880
-dev-campaigns-association-updated_two,2,3,10800000,5242880
+dev-campaigns-association-updated_two,2,4,10800000,5242880
 credit_underwriting.public.batch_text_messages,12,3,10800000,5242880
 credit_underwriting.public.batch_text_messages,13,2,10800000,5242880
+credit_underwriting.public.batch_text_test,13,2,10800000,5242880
