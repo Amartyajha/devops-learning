@@ -60,7 +60,7 @@ def applyModifications(modifiedArray):
             topicName[i[1:].split(',')[0]]=1
     print(topicName)
     
-    for i in topicName:
+    """for i in topicName:
         if(topicName[i]>1):
             getTopicValues(i,modifiedArray)
             #subprocess.run(['kafka-topics','--bootstrap-server','localhost:9092','--alter','--topic',i,'--partitions',topicValues[1], '--replication-factor', topicValues[2]],capture_output=True, text=True, check=True)
@@ -73,7 +73,7 @@ def applyModifications(modifiedArray):
                 elif(j.startswith("-"+i)):
                     topicValues=j.split(',')
                     print(topicValues)
-                    #subprocess.run(['kafka-topics','--bootstrap-server','localhost:9092','--delete','--topic',i,'--partitions',topicValues[1], '--replication-factor', topicValues[2]],capture_output=True, text=True, check=True)
+                    #subprocess.run(['kafka-topics','--bootstrap-server','localhost:9092','--delete','--topic',i,'--partitions',topicValues[1], '--replication-factor', topicValues[2]],capture_output=True, text=True, check=True)"""
 
 def getTopicValues(i,modifiedArray):
     for j in modifiedArray:
