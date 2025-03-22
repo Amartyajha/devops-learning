@@ -39,32 +39,47 @@
 from cmath import log
 
 
-def getListofIPaddress():
-    dict={}
-    with open('devops-learning/ip_address.log', 'r') as f:
-        lines=f.readlines()
-        for line in lines: 
-            logArr=line.split(' ')
-            statusCode=int(logArr[8])
-            if (logArr[0] not in dict):
-                dict[logArr[0]]={}
-                if(statusCode>=200 and statusCode<300):
-                    dict[logArr[0]]['2xx']=1
-                elif(statusCode>=300 and statusCode<400):
-                    dict[logArr[0]]['3xx']=1
-                elif(statusCode>=400 and statusCode<500):
-                    dict[logArr[0]]['4xx']=1
+   dict={}
+   with open('devops-learning/ip_address.log', 'r') as f:
+       lines=f.readlines()
+       for line in lines: 
+            try:
+                logArr=line.split(' ')
+                if len(logArr) < 9:  # Verify minimum required fields
+                    continue
+                
+                # Validate IP address and status code
+                ip_addr = logArr[0].strip()
+                if not ip_addr:
+                    continue
+                    
+                try:
+                    statusCode=int(logArr[8])
+                except ValueError:
+                    continue
+                    
+                if (ip_addr not in dict):
+                    dict[ip_addr]={}
+                    if(statusCode>=200 and statusCode<300):
+                        dict[ip_addr]['2xx']=1
+                    elif(statusCode>=300 and statusCode<400):
+                        dict[ip_addr]['3xx']=1
+                    elif(statusCode>=400 and statusCode<500):
+                        dict[ip_addr]['4xx']=1
+                    else:
+                        dict[ip_addr]['5xx']=1
                 else:
-                    dict[logArr[0]]['5xx']=1
-            else:
-                if(statusCode>=200 and statusCode<300):
-                    getValue('2xx',dict[logArr[0]])
-                elif(statusCode>=300 and statusCode<400):
-                    getValue('3xx',dict[logArr[0]])
-                elif(statusCode>=400 and statusCode<500):
-                    getValue('4xx',dict[logArr[0]])
-                else:
-                    getValue('5xx',dict[logArr[0]])
+                    if(statusCode>=200 and statusCode<300):
+                        getValue('2xx',dict[ip_addr])
+                    elif(statusCode>=300 and statusCode<400):
+                        getValue('3xx',dict[ip_addr])
+                    elif(statusCode>=400 and statusCode<500):
+                        getValue('4xx',dict[ip_addr])
+                    else:
+                        getValue('5xx',dict[ip_addr])
+            except Exception:
+                continue
+    print(dict)
     print(dict)
 
 def getValue(statusCode, dict):
